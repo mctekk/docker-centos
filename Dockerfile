@@ -23,5 +23,21 @@ RUN  yum -y install php php-common.x86_64 php-devel.x86_64  php-fpm.x86_64 php-g
                     php-xml.x86_64 php-opcache.x86_64 php-pecl-gmagick.x86_64 php-pecl-geoip.x86_64 \
                     php-pecl-memcache.x86_64 php-pecl-memcached.x86_64 php-pecl-mcrypt.x86_64 php-pecl-redis.x86_64 \
                     php-pecl-zip.x86_64 php-phalcon3.x86_64 php-sodium.x86_64 php-wkhtmltox.x86_64 composer.noarch
+                    
+RUN yum -y install gcc make git 
 
-RUN sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+ENV NVM_VERSION v0.34.0
+ENV NODE_VERSION v7.5.0
+ENV NVM_DIR /usr/local/nvm
+RUN mkdir $NVM_DIR
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+
+ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
+ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+
+RUN echo "source $NVM_DIR/nvm.sh && \
+    nvm install $NODE_VERSION && \
+    nvm alias default $NODE_VERSION && \
+    nvm use default" | bash
+
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/mriedmann/oh-my-zsh/master/tools/install.sh)"
